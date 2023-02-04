@@ -94,7 +94,7 @@ export const initPassport = (): void => {
         {
           clientID: process.env.FACEBOOK_APP_ID,
           clientSecret: process.env.FACEBOOK_APP_SECRET,
-          callbackURL: `${process.env.API_URL}/facebook/callback`,
+          callbackURL: `${process.env.API_URL}/api/v1/facebook/callback`,
           profileFields: [
             "id",
             "displayName",
@@ -107,7 +107,7 @@ export const initPassport = (): void => {
             "website",
           ],
         },
-        async (accessToken, refreshToken, profile, done) => {
+        async (accessToken : string, refreshToken :string, profile :any, done : any) => {
           const user = await User.findOne({ facebookId: profile.id });
           if (user) {
             return done(null, user);

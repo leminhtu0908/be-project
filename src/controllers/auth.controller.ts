@@ -363,27 +363,31 @@ const AuthController = {
     passport.authenticate(
       "facebook",
       {
+        successRedirect:`${process.env.FRONTEND_URL}`,
         failureRedirect: `${process.env.FRONTEND_URL}?auth=social&responseType=error`,
-        session: false,
+        // session: false,
       },
       async (err, user) => {
-        req.login(user, { session: false }, async (error) => {
-          if (error) return next(error);
-
-          const body = { _id: user._id, email: user.email };
-          const token = jwt.sign({ user: body }, process.env.SECRET as string);
-
-          const payload = {
-            auth: "social",
-            responseType: "success",
-            provider: SocialProvider.Facebook,
-            token,
-          };
-          const queryString = new URLSearchParams(payload).toString();
-          return res
-            .cookie("token", token)
-            .redirect(`${process.env.FRONTEND_URL}/?${queryString}`);
-        });
+        console.log(user);
+        if(user){
+          req.login(user, { session: false }, async (error) => {
+            if (error) return next(error);
+            const body = { _id: user._id, email: user.email };
+            const token = jwt.sign({ user: body }, process.env.SECRET as string);
+  
+            const payload = {
+              auth: "social",
+              responseType: "success",
+              provider: SocialProvider.Facebook,
+              token,
+            };
+            const queryString = new URLSearchParams(payload).toString();
+            return res
+              .json({"auth":body})
+              .cookie("token", token)
+              .redirect(`${process.env.FRONTEND_URL}`);
+          });
+        }
       }
     )(req, res, next);
   },

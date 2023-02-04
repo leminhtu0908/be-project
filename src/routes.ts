@@ -22,5 +22,9 @@ router.get('/github/callback', AuthController.githubCallback);
 router.get('/google', passport.authenticate('google', { scope: 'profile email' }));
 router.get('/google/callback', AuthController.googleCallback);
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
-router.get('/facebook/callback', AuthController.facebookCallback);
+// router.get('/facebook/callback', AuthController.facebookCallback);
+router.get('/facebook/callback',  passport.authenticate('facebook', {
+    successReturnToOrRedirect: '/',
+    failureRedirect: '/login'
+  }));
 export default router;
